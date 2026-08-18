@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charles J — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0d1826;
+    --bg-2: #122236;
+    --bg-3: #16283e;
+    --line: #294a6b;
+    --line-soft: #1e344c;
+    --brass: #e0a24a;
+    --brass-dim: #b4823b;
+    --blue: #6db6e0;
+    --ink: #eef2f6;
+    --ink-dim: #9fb2c6;
+    --ink-faint: #5f7791;
+    --mono: 'JetBrains Mono', monospace;
+    --disp: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0/44px 44px,
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0/44px 44px,
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:var(--body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--brass); color:#0d1826;}
+  a{color:inherit; text-decoration:none;}
+
+  /* ---------- corner ticks / blueprint chrome ---------- */
+  .tick{position:fixed; width:14px; height:14px; border-color:var(--brass-dim); opacity:.55; z-index:40; pointer-events:none;}
+  .tick.tl{top:14px; left:14px; border-top:1.5px solid; border-left:1.5px solid;}
+  .tick.tr{top:14px; right:14px; border-top:1.5px solid; border-right:1.5px solid;}
+  .tick.bl{bottom:14px; left:14px; border-bottom:1.5px solid; border-left:1.5px solid;}
+  .tick.br{bottom:14px; right:14px; border-bottom:1.5px solid; border-right:1.5px solid;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:30;
+    background:rgba(13,24,38,.82); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .brand{font-family:var(--mono); font-size:13px; letter-spacing:.12em; color:var(--ink);}
+  .brand span{color:var(--brass);}
+  .navlinks{display:flex; gap:30px; font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;}
+  .navlinks a{color:var(--ink-dim); position:relative; padding-bottom:3px; transition:color .25s;}
+  .navlinks a:hover{color:var(--brass);}
+  .navlinks a::before{content:'';}
+  @media(max-width:720px){.navlinks{display:none;}}
+
+  /* ---------- hero / title block ---------- */
+  header{padding:150px 0 90px; position:relative;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--blue);
+    display:flex; align-items:center; gap:10px; margin-bottom:26px; opacity:0; animation:fadeUp .7s ease .1s forwards;
+  }
+  .eyebrow::before{content:''; width:26px; height:1px; background:var(--blue);}
+
+  h1.title{
+    font-family:var(--disp); font-weight:700; line-height:1.03;
+    font-size:clamp(40px, 6.4vw, 84px); letter-spacing:-.02em;
+    opacity:0; animation:fadeUp .8s ease .22s forwards;
+  }
+  h1.title em{font-style:normal; color:var(--brass);}
+  .subtitle{
+    max-width:600px; margin-top:26px; color:var(--ink-dim); font-size:16.5px; line-height:1.7;
+    opacity:0; animation:fadeUp .8s ease .38s forwards;
+  }
+  .hero-cta{display:flex; gap:16px; margin-top:38px; flex-wrap:wrap; opacity:0; animation:fadeUp .8s ease .5s forwards;}
+  .btn{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; padding:13px 22px;
+    border:1px solid var(--brass-dim); color:var(--brass); text-transform:uppercase;
+    transition:all .25s; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn:hover{background:var(--brass); color:#0d1826; border-color:var(--brass);}
+  .btn.ghost{border-color:var(--line); color:var(--ink-dim);}
+  .btn.ghost:hover{border-color:var(--blue); color:var(--blue); background:transparent;}
+
+  /* title block, like an engineering drawing corner stamp */
+  .title-block{
+    position:absolute; top:150px; right:32px; width:230px;
+    border:1px solid var(--line); font-family:var(--mono); font-size:10.5px; color:var(--ink-faint);
+    opacity:0; animation:fadeUp .8s ease .3s forwards;
+  }
+  .title-block .row{display:flex; justify-content:space-between; padding:9px 12px; border-bottom:1px solid var(--line-soft);}
+  .title-block .row:last-child{border-bottom:none;}
+  .title-block .row b{color:var(--ink-dim); font-weight:500;}
+  @media(max-width:900px){.title-block{display:none;}}
+
+  @keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- section scaffolding ---------- */
+  section{padding:100px 0;}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:52px;}
+  .sec-num{font-family:var(--mono); font-size:12px; color:var(--brass);}
+  .sec-title{font-family:var(--disp); font-size:clamp(26px,3.4vw,38px); font-weight:600; letter-spacing:-.01em;}
+  .sec-rule{flex:1; height:1px; background:var(--line);}
+  .sec-note{font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.05em;}
+
+  /* ---------- stack diagram (signature element) ---------- */
+  .stack-wrap{border:1px solid var(--line); background:var(--bg-2); position:relative;}
+  .stack-header{display:flex; justify-content:space-between; align-items:center; padding:16px 22px; border-bottom:1px solid var(--line-soft); font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.08em;}
+  .stack-header span.dot{width:7px; height:7px; border-radius:50%; background:var(--brass); display:inline-block; margin-right:8px; box-shadow:0 0 8px var(--brass);}
+  .layer{
+    display:grid; grid-template-columns:150px 1fr; border-bottom:1px solid var(--line-soft);
+    cursor:pointer; position:relative; transition:background .3s;
+  }
+  .layer:last-child{border-bottom:none;}
+  .layer:hover, .layer.active{background:rgba(224,162,74,.06);}
+  .layer-label{
+    padding:26px 22px; font-family:var(--mono); font-size:12px; letter-spacing:.1em; color:var(--ink-dim);
+    border-right:1px dashed var(--line); display:flex; align-items:center; gap:10px;
+  }
+  .layer-label .idx{color:var(--brass); font-weight:600;}
+  .layer-body{padding:26px 26px; display:flex; align-items:center; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-family:var(--mono); font-size:11.5px; padding:6px 12px; border:1px solid var(--line);
+    color:var(--ink-dim); transition:all .25s;
+  }
+  .layer:hover .chip, .layer.active .chip{border-color:var(--brass-dim); color:var(--ink);}
+  .layer-desc{
+    font-size:13.5px; color:var(--ink-faint); max-width:520px; line-height:1.6; margin-top:4px; width:100%;
+    max-height:0; overflow:hidden; transition:max-height .35s ease, opacity .35s ease; opacity:0;
+  }
+  .layer.active .layer-desc{max-height:100px; opacity:1; margin-top:12px;}
+  @media(max-width:640px){.layer{grid-template-columns:1fr;} .layer-label{border-right:none; border-bottom:1px dashed var(--line); padding:16px 18px;} .layer-body{padding:18px;}}
+
+  /* ---------- profile ---------- */
+  .profile-grid{display:grid; grid-template-columns:1.3fr .9fr; gap:60px;}
+  .profile-text p{color:var(--ink-dim); font-size:16px; line-height:1.85; margin-bottom:18px;}
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .stat{background:var(--bg-2); padding:24px 20px;}
+  .stat .n{font-family:var(--disp); font-size:30px; font-weight:700; color:var(--brass);}
+  .stat .l{font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); letter-spacing:.08em; margin-top:6px; text-transform:uppercase;}
+  @media(max-width:860px){.profile-grid{grid-template-columns:1fr;}}
+
+  /* ---------- projects (case files) ---------- */
+  .case{
+    border:1px solid var(--line); margin-bottom:22px; position:relative; overflow:hidden;
+    transition:border-color .3s;
+  }
+  .case:hover{border-color:var(--brass-dim);}
+  .case-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:20px; padding:28px 30px;
+    flex-wrap:wrap; border-bottom:1px solid var(--line-soft); cursor:pointer;
+  }
+  .case-id{font-family:var(--mono); font-size:11px; color:var(--brass); letter-spacing:.1em; margin-bottom:8px;}
+  .case-name{font-family:var(--disp); font-size:23px; font-weight:600;}
+  .case-meta{display:flex; gap:18px; font-family:var(--mono); font-size:11px; color:var(--ink-faint); flex-wrap:wrap; align-items:center;}
+  .case-meta .status{color:var(--blue); border:1px solid var(--blue); padding:3px 9px; letter-spacing:.05em;}
+  .case-body{padding:0 30px; max-height:0; overflow:hidden; transition:max-height .5s ease, padding .5s ease;}
+  .case.open .case-body{max-height:600px; padding:28px 30px 32px;}
+  .case-cols{display:grid; grid-template-columns:1fr 1fr; gap:36px;}
+  .case-cols h4{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; color:var(--brass-dim); text-transform:uppercase; margin-bottom:12px;}
+  .case-cols ul{list-style:none;}
+  .case-cols li{color:var(--ink-dim); font-size:14px; line-height:1.65; padding-left:16px; position:relative; margin-bottom:10px;}
+  .case-cols li::before{content:'—'; position:absolute; left:0; color:var(--ink-faint);}
+  .case-link{display:inline-flex; align-items:center; gap:6px; margin-top:18px; font-family:var(--mono); font-size:11.5px; color:var(--blue); border-bottom:1px dashed var(--blue); padding-bottom:2px;}
+  @media(max-width:700px){.case-cols{grid-template-columns:1fr;} .case-top{padding:22px;} .case.open .case-body{padding:0 22px 26px;}}
+
+  /* ---------- experience / timeline ---------- */
+  .tline{border-left:1px solid var(--line); padding-left:34px; position:relative;}
+  .titem{position:relative; padding-bottom:44px;}
+  .titem:last-child{padding-bottom:0;}
+  .titem::before{content:''; position:absolute; left:-39.5px; top:4px; width:9px; height:9px; background:var(--bg); border:1.5px solid var(--brass); border-radius:50%;}
+  .titem .when{font-family:var(--mono); font-size:11px; color:var(--brass); letter-spacing:.08em; margin-bottom:8px;}
+  .titem .what{font-family:var(--disp); font-size:19px; font-weight:600; margin-bottom:4px;}
+  .titem .where{color:var(--ink-faint); font-size:13px; margin-bottom:12px; font-family:var(--mono);}
+  .titem p{color:var(--ink-dim); font-size:14.5px; line-height:1.7; max-width:560px;}
+
+  /* ---------- education ---------- */
+  .edu-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .edu-card{background:var(--bg-2); padding:28px 24px;}
+  .edu-card .yr{font-family:var(--mono); font-size:11px; color:var(--brass);}
+  .edu-card h4{font-family:var(--disp); font-size:17px; margin:10px 0 6px; font-weight:600;}
+  .edu-card .inst{color:var(--ink-faint); font-size:12.5px; margin-bottom:10px;}
+  .edu-card .gpa{font-family:var(--mono); font-size:11.5px; color:var(--ink-dim);}
+  @media(max-width:800px){.edu-grid{grid-template-columns:1fr;}}
+
+  /* ---------- skills ---------- */
+  .skill-groups{display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  .skill-group h4{font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--brass-dim); text-transform:uppercase; margin-bottom:16px;}
+  .skill-group .chip{margin:0 8px 8px 0; display:inline-block;}
+  @media(max-width:800px){.skill-groups{grid-template-columns:1fr;}}
+
+  /* ---------- footer / contact ---------- */
+  footer{border-top:1px solid var(--line-soft); padding:80px 0 40px;}
+  .contact-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:60px;}
+  footer h2{font-family:var(--disp); font-size:clamp(30px,4vw,46px); font-weight:700; line-height:1.15; margin-bottom:22px;}
+  footer h2 em{font-style:normal; color:var(--brass);}
+  .contact-list{font-family:var(--mono); font-size:13.5px; color:var(--ink-dim); line-height:2.3;}
+  .contact-list a:hover{color:var(--brass);}
+  .lang-row{display:flex; gap:30px; margin-top:30px;}
+  .lang-row div{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);}
+  .lang-row b{display:block; color:var(--ink); font-size:14px; font-family:var(--body); margin-bottom:3px;}
+  .fine{margin-top:70px; display:flex; justify-content:space-between; font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); border-top:1px solid var(--line-soft); padding-top:22px; flex-wrap:wrap; gap:10px;}
+  @media(max-width:800px){.contact-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">CHARLES<span>·</span>J</div>
+    <div class="navlinks">
+      <a href="#stack">Stack</a>
+      <a href="#profile">Profile</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <div class="eyebrow">DWG NO. CJ—2026 &nbsp;/&nbsp; FULL STACK DEVELOPER</div>
+  <h1 class="title">I build things<br>from the <em>interface</em><br>down to the <em>database</em>.</h1>
+  <p class="subtitle">Charles J — a full-stack developer fresher out of Tenkasi, Tamil Nadu, who treats every layer of an application as load-bearing. Frontend, backend, database, and the server it all runs on.</p>
+  <div class="hero-cta">
+    <a class="btn" href="#projects">View Projects ↓</a>
+    <a class="btn ghost" href="mailto:charlespro504@gmail.com">Get in Touch</a>
+  </div>
+  <div class="title-block">
+    <div class="row"><span>NAME</span><b>Charles J</b></div>
+    <div class="row"><span>ROLE</span><b>Full Stack Dev</b></div>
+    <div class="row"><span>BASE</span><b>Tenkasi, TN</b></div>
+    <div class="row"><span>STATUS</span><b>Fresher / Open</b></div>
+    <div class="row"><span>REV</span><b>2026</b></div>
+  </div>
+</header>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">The Stack — Cross-Section</h2>
+      <div class="sec-rule"></div>
+      <span class="sec-note">click a layer</span>
+    </div>
+
+    <div class="stack-wrap reveal">
+      <div class="stack-header"><span><span class="dot"></span>system.arch — 4 layers</span><span>hover / tap to inspect</span></div>
+
+      <div class="layer active" data-layer="1">
+        <div class="layer-label"><span class="idx">01</span> Interface</div>
+        <div class="layer-body">
+          <div style="width:100%; display:flex; flex-wrap:wrap; gap:10px;">
+            <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">React</span><span class="chip">Tailwind CSS</span><span class="chip">TypeScript</span>
+          </div>
+          <div class="layer-desc">What the user actually touches — responsive layouts that hold up on a phone in a farmer's hand or a front-desk screen at a hotel.</div>
+        </div>
+      </div>
+
+      <div class="layer" data-layer="2">
+        <div class="layer-label"><span class="idx">02</span> Application</div>
+        <div class="layer-body">
+          <div style="width:100%; display:flex; flex-wrap:wrap; gap:10px;">
+            <span class="chip">Modern PHP</span><span class="chip">Python</span><span class="chip">REST APIs</span>
+          </div>
+          <div class="layer-desc">Business logic, API routes, and payment integrations (Razorpay) live here — the part that decides what the interface is allowed to do.</div>
+        </div>
+      </div>
+
+      <div class="layer" data-layer="3">
+        <div class="layer-label"><span class="idx">03</span> Data</div>
+        <div class="layer-body">
+          <div style="width:100%; display:flex; flex-wrap:wrap; gap:10px;">
+            <span class="chip">SQL</span><span class="chip">MySQL</span><span class="chip">PostgreSQL</span>
+          </div>
+          <div class="layer-desc">Schema design and query optimization — normalized tables for bookings, inventory, and transactions that stay fast under real load.</div>
+        </div>
+      </div>
+
+      <div class="layer" data-layer="4">
+        <div class="layer-label"><span class="idx">04</span> Infrastructure</div>
+        <div class="layer-body">
+          <div style="width:100%; display:flex; flex-wrap:wrap; gap:10px;">
+            <span class="chip">Git</span><span class="chip">cPanel</span><span class="chip">FileZilla</span><span class="chip">phpMyAdmin</span><span class="chip">InfinityFree</span><span class="chip">SSL / DNS</span>
+          </div>
+          <div class="layer-desc">Deployment, domain routing, and HTTPS provisioning — the bedrock that keeps the other three layers actually reachable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="profile">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Profile</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="profile-grid reveal">
+      <div class="profile-text">
+        <p>Enthusiastic full-stack developer fresher, skilled across front-end, back-end, and database development using HTML, CSS, JavaScript, PHP, and SQL. A quick learner with strong problem-solving and teamwork instincts, looking for the room to grow and to make a real contribution.</p>
+        <p>Every project below started as someone else's operational headache — a farmer's maintenance log, a store's overstocked shelf, a hotel's paper ledger — and ended as a working system with a database behind it.</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="n">3</div><div class="l">Shipped Projects</div></div>
+        <div class="stat"><div class="n">7.0</div><div class="l">MCA GPA / 10</div></div>
+        <div class="stat"><div class="n">2</div><div class="l">Languages Spoken</div></div>
+        <div class="stat"><div class="n">1</div><div class="l">Live Internship</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Case Files</h2>
+      <div class="sec-rule"></div>
+      <span class="sec-note">click to expand</span>
+    </div>
+
+    <div class="case open reveal" data-case>
+      <div class="case-top" onclick="toggleCase(this)">
+        <div>
+          <div class="case-id">CASE / TRACTOR-BOOK-APP</div>
+          <div class="case-name">Tractor Book App</div>
+        </div>
+        <div class="case-meta"><span class="status">Active</span><span>2026 — Present</span><span>PHP · MySQL · Razorpay</span></div>
+      </div>
+      <div class="case-body">
+        <div class="case-cols">
+          <div>
+            <h4>Problem</h4>
+            <ul>
+              <li>Farmers and equipment owners struggle to manage tractor maintenance schedules and find local machinery services.</li>
+              <li>Payments were handled in cash, with no reliable digital record.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Solution &amp; Impact</h4>
+            <ul>
+              <li>Built a centralized platform for equipment tracking, maintenance scheduling, and rental management.</li>
+              <li>Integrated Razorpay for fast, secure digital payments — no more cash-based record-keeping.</li>
+              <li>Responsive UI designed for farmers managing operations from a phone, in the field.</li>
+            </ul>
+          </div>
+        </div>
+        <a class="case-link" href="https://tractor.infinityfreeapp.com" target="_blank" rel="noopener">tractor.infinityfreeapp.com ↗</a>
+      </div>
+    </div>
+
+    <div class="case reveal" data-case>
+      <div class="case-top" onclick="toggleCase(this)">
+        <div>
+          <div class="case-id">CASE / BIGMART-SALES-PREDICTION</div>
+          <div class="case-name">BigMart Sales Prediction</div>
+        </div>
+        <div class="case-meta"><span class="status" style="color:var(--brass); border-color:var(--brass-dim);">Complete</span><span>2024 — 2025</span><span>Python · ML</span></div>
+      </div>
+      <div class="case-body">
+        <div class="case-cols">
+          <div>
+            <h4>Problem</h4>
+            <ul>
+              <li>Retail businesses face overstocking or stockouts from unpredictable customer demand, causing revenue loss.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Solution &amp; Impact</h4>
+            <ul>
+              <li>Applied machine learning to historical sales data to forecast future product demand.</li>
+              <li>Let store managers optimize stocking strategy, cutting holding costs and improving supply-chain efficiency.</li>
+              <li>Identified the product and store features that actually drive sales, to inform data-driven marketing.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case reveal" data-case>
+      <div class="case-top" onclick="toggleCase(this)">
+        <div>
+          <div class="case-id">CASE / HOTEL-MANAGEMENT-SYSTEM</div>
+          <div class="case-name">Hotel Management System</div>
+        </div>
+        <div class="case-meta"><span class="status" style="color:var(--brass); border-color:var(--brass-dim);">Complete</span><span>2021 — 2024</span><span>Full Stack</span></div>
+      </div>
+      <div class="case-body">
+        <div class="case-cols">
+          <div>
+            <h4>Problem</h4>
+            <ul>
+              <li>Manual room booking, paper-based billing, and scattered records meant high overhead and billing errors.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Solution &amp; Impact</h4>
+            <ul>
+              <li>Built a unified system to automate room availability, guest reservations, and billing.</li>
+              <li>Reduced double-booking risk and sped up check-in / check-out.</li>
+              <li>Streamlined records into a secure relational database for fast reporting and auditing.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Experience</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="tline reveal">
+      <div class="titem">
+        <div class="when">2026</div>
+        <div class="what">Full Stack Developer Intern</div>
+        <div class="where">SSPR Software Services · Pavoorchatram</div>
+        <p>Key responsibilities: REST API creation, database schema design, and backend optimization — turning production issues into faster, cleaner queries.</p>
+      </div>
+      <div class="titem">
+        <div class="when">Ongoing</div>
+        <div class="what">Deployment &amp; Server Management</div>
+        <div class="where">Independent / Freelance builds</div>
+        <p>Hands-on experience deploying and managing full-stack PHP/MySQL apps in production: remote database configuration, user privileges, FTP file management, custom domains, DNS routing, and SSL provisioning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Education</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="edu-grid reveal">
+      <div class="edu-card">
+        <div class="yr">2024 — 2026</div>
+        <h4>Master of Computer Applications</h4>
+        <div class="inst">Sardar Raja College of Engineering</div>
+        <div class="gpa">GPA — 7.0 / 10</div>
+      </div>
+      <div class="edu-card">
+        <div class="yr">2021 — 2024</div>
+        <h4>B.Sc. Computer Science</h4>
+        <div class="inst">JP College of Arts &amp; Science</div>
+        <div class="gpa">GPA — 7.0 / 10</div>
+      </div>
+      <div class="edu-card">
+        <div class="yr">2018 — 2021</div>
+        <h4>Higher Secondary</h4>
+        <div class="inst">BBHSS</div>
+        <div class="gpa">HSC 80% · SSLC 68.2%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">Tools of the Trade</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="skill-groups reveal">
+      <div class="skill-group">
+        <h4>Core Languages</h4>
+        <span class="chip">SQL</span><span class="chip">PHP</span><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">HTML</span><span class="chip">CSS</span>
+      </div>
+      <div class="skill-group">
+        <h4>Frameworks &amp; Libraries</h4>
+        <span class="chip">React</span><span class="chip">Tailwind CSS</span><span class="chip">TypeScript</span>
+      </div>
+      <div class="skill-group">
+        <h4>Infra &amp; Ops</h4>
+        <span class="chip">Git</span><span class="chip">cPanel</span><span class="chip">FileZilla</span><span class="chip">phpMyAdmin</span><span class="chip">InfinityFree</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-grid reveal">
+      <div>
+        <h2>Let's build the<br>next <em>layer</em>, together.</h2>
+        <div class="contact-list">
+          <div>→ <a href="mailto:charlespro504@gmail.com">charlespro504@gmail.com</a></div>
+          <div>→ <a href="tel:+917825919760">+91 78259 19760</a></div>
+          <div>→ <a href="https://www.linkedin.com/in/charles2003" target="_blank" rel="noopener">linkedin.com/in/charles2003</a></div>
+          <div>→ Tenkasi, Tamil Nadu, India</div>
+        </div>
+      </div>
+      <div>
+        <div class="lang-row">
+          <div><b>English</b>Fluent</div>
+          <div><b>Tamil</b>Native</div>
+        </div>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Charles J — Full Stack Developer</span>
+      <span>DWG NO. CJ—2026 · REV FINAL</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // stack layer toggle
+  document.querySelectorAll('.layer').forEach(l=>{
+    l.addEventListener('click', ()=>{
+      const wasActive = l.classList.contains('active');
+      document.querySelectorAll('.layer').forEach(x=>x.classList.remove('active'));
+      if(!wasActive) l.classList.add('active');
+    });
+  });
+
+  // case file toggle
+  function toggleCase(el){
+    const card = el.closest('[data-case]');
+    card.classList.toggle('open');
+  }
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
