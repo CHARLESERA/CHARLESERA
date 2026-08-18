@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charles J — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #faf8f3;
+    --paper-2: #f3f0e8;
+    --ink: #1c1a17;
+    --ink-soft: #4a453e;
+    --ink-faint: #8a8378;
+    --rule: #ddd6c7;
+    --crimson: #7a1f2b;
+    --crimson-soft: #a94a4a;
+    --navy: #1f3350;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--crimson); color:#fff;}
+
+  .measure{max-width:840px; margin:0 auto; padding:0 32px;}
+  .wide{max-width:980px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    border-bottom:1px solid var(--rule); background:rgba(250,248,243,.92); backdrop-filter:blur(6px);
+    position:sticky; top:0; z-index:50;
+  }
+  .topbar-inner{max-width:980px; margin:0 auto; padding:0 32px; height:58px; display:flex; align-items:center; justify-content:space-between;}
+  .tb-name{font-family:var(--serif); font-weight:600; font-size:15px; letter-spacing:.01em;}
+  .tb-links{display:flex; gap:28px; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);}
+  .tb-links a{border-bottom:1px solid transparent; padding-bottom:2px; transition:.2s;}
+  .tb-links a:hover{color:var(--crimson); border-color:var(--crimson);}
+  @media(max-width:680px){.tb-links{display:none;}}
+
+  /* ---------- header / masthead ---------- */
+  .masthead{padding:74px 0 60px; border-bottom:1px solid var(--rule);}
+  .masthead-inner{max-width:980px; margin:0 auto; padding:0 32px; display:flex; gap:44px; align-items:flex-end;}
+  .portrait{
+    width:128px; height:128px; border-radius:50%; flex-shrink:0;
+    background:var(--navy);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-size:40px; color:var(--paper); font-weight:600;
+    border:1px solid var(--rule); box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px var(--rule);
+  }
+  .masthead-text{flex:1;}
+  .kicker{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--crimson); text-transform:uppercase; margin-bottom:12px;}
+  h1.name{font-family:var(--serif); font-weight:700; font-size:clamp(34px,4.6vw,52px); line-height:1.06; letter-spacing:-.01em;}
+  .role{font-family:var(--serif); font-style:italic; font-size:19px; color:var(--ink-soft); margin-top:8px;}
+  .byline{
+    margin-top:20px; display:flex; flex-wrap:wrap; gap:4px 22px; font-family:var(--mono); font-size:12px; color:var(--ink-faint);
+  }
+  .byline a:hover{color:var(--crimson);}
+  @media(max-width:680px){.masthead-inner{flex-direction:column; align-items:flex-start; gap:26px;} .portrait{width:96px; height:96px; font-size:32px;}}
+
+  /* ---------- sections ---------- */
+  section{padding:64px 0;}
+  section + section{border-top:1px solid var(--rule);}
+  .sec-label{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:34px;
+  }
+  .roman{font-family:var(--serif); font-style:italic; font-size:15px; color:var(--crimson-soft); min-width:26px;}
+  .sec-title{font-family:var(--serif); font-weight:600; font-size:26px; letter-spacing:-.01em;}
+
+  /* ---------- abstract ---------- */
+  .abstract p{
+    font-family:var(--serif); font-size:18px; line-height:1.85; color:var(--ink-soft); margin-bottom:18px;
+  }
+  .abstract p:first-of-type::first-letter{
+    font-size:52px; float:left; line-height:.85; padding-right:8px; padding-top:4px; color:var(--crimson); font-weight:700;
+  }
+  .fact-row{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:38px;}
+  .fact{padding:20px 18px; border-right:1px solid var(--rule);}
+  .fact:last-child{border-right:none;}
+  .fact .n{font-family:var(--serif); font-weight:700; font-size:26px; color:var(--crimson);}
+  .fact .l{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:6px;}
+  @media(max-width:680px){.fact-row{grid-template-columns:1fr 1fr;} .fact{border-bottom:1px solid var(--rule);}}
+
+  /* ---------- research areas (skills) ---------- */
+  .areas-table{width:100%; border-collapse:collapse;}
+  .areas-table tr{border-bottom:1px solid var(--rule);}
+  .areas-table tr:first-child{border-top:1px solid var(--rule);}
+  .areas-table td{padding:18px 0; vertical-align:top;}
+  .areas-table td.label{
+    font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);
+    width:170px; padding-right:20px;
+  }
+  .areas-table td.items{font-family:var(--serif); font-size:16px; color:var(--ink); line-height:1.8;}
+  .areas-table td.items .sep{color:var(--rule); margin:0 8px;}
+
+  /* ---------- selected works (publications) ---------- */
+  .pub{border-bottom:1px solid var(--rule); padding:26px 0; cursor:pointer;}
+  .pub:first-child{border-top:1px solid var(--rule);}
+  .pub-head{display:flex; gap:16px; align-items:flex-start;}
+  .pub-num{font-family:var(--mono); font-size:13px; color:var(--crimson); padding-top:3px; min-width:26px;}
+  .pub-main{flex:1;}
+  .pub-title{font-family:var(--serif); font-size:20px; font-weight:600; color:var(--ink);}
+  .pub-meta{font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-top:6px; letter-spacing:.03em;}
+  .pub-arrow{font-family:var(--mono); font-size:13px; color:var(--ink-faint); transition:transform .3s;}
+  .pub.open .pub-arrow{transform:rotate(90deg); color:var(--crimson);}
+  .pub-body{max-height:0; overflow:hidden; transition:max-height .5s ease;}
+  .pub.open .pub-body{max-height:500px;}
+  .pub-body-inner{padding:20px 0 4px 42px;}
+  .pub-body-inner .tag{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--crimson-soft); margin-bottom:8px; display:block;}
+  .pub-body-inner p{font-family:var(--serif); font-size:15.5px; line-height:1.8; color:var(--ink-soft); max-width:640px; margin-bottom:14px;}
+  .pub-body-inner .stack-line{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); margin-bottom:10px;}
+  .pub-body-inner .link{font-family:var(--mono); font-size:12px; color:var(--navy); border-bottom:1px dashed var(--navy); padding-bottom:1px;}
+  .pub-body-inner .link:hover{color:var(--crimson); border-color:var(--crimson);}
+
+  /* ---------- experience / education (CV list) ---------- */
+  .cv-item{display:grid; grid-template-columns:150px 1fr; gap:24px; padding:22px 0; border-bottom:1px solid var(--rule);}
+  .cv-item:first-child{border-top:1px solid var(--rule);}
+  .cv-when{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); padding-top:3px;}
+  .cv-what{font-family:var(--serif); font-size:18px; font-weight:600;}
+  .cv-where{font-family:var(--sans); font-size:12.5px; color:var(--ink-faint); margin:4px 0 10px; font-style:italic; font-family:var(--serif);}
+  .cv-desc{font-family:var(--serif); font-size:15px; color:var(--ink-soft); line-height:1.75; max-width:560px;}
+  @media(max-width:600px){.cv-item{grid-template-columns:1fr; gap:6px;}}
+
+  /* ---------- footer ---------- */
+  footer{padding:70px 0 46px;}
+  .footer-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:50px;}
+  footer h2{font-family:var(--serif); font-weight:700; font-size:clamp(28px,3.6vw,40px); margin-bottom:20px;}
+  .footer-contact{font-family:var(--mono); font-size:13px; line-height:2.3; color:var(--ink-soft);}
+  .footer-contact a:hover{color:var(--crimson);}
+  .footer-lang{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); display:flex; gap:40px;}
+  .footer-lang b{display:block; font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ink); margin-bottom:2px;}
+  .fine{margin-top:60px; padding-top:20px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-family:var(--mono); font-size:10px; color:var(--ink-faint); letter-spacing:.04em;}
+  @media(max-width:680px){.footer-grid{grid-template-columns:1fr;}}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="tb-name">Charles J</div>
+    <div class="tb-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#areas">Research</a>
+      <a href="#works">Works</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="portrait">CJ</div>
+    <div class="masthead-text">
+      <div class="kicker">Curriculum Vitae · Est. 2026</div>
+      <h1 class="name">Charles J</h1>
+      <div class="role">Full Stack Developer — Applications of Web &amp; Data Systems</div>
+      <div class="byline">
+        <a href="mailto:charlespro504@gmail.com">charlespro504@gmail.com</a>
+        <a href="tel:+917825919760">+91 78259 19760</a>
+        <a href="https://www.linkedin.com/in/charles2003" target="_blank" rel="noopener">linkedin.com/in/charles2003</a>
+        <span>Tenkasi, Tamil Nadu, India</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="measure">
+    <div class="sec-label"><span class="roman">I.</span><h2 class="sec-title">Abstract</h2></div>
+    <div class="abstract reveal">
+      <p>Charles J is a full-stack developer fresher whose work spans front-end interface design, back-end application logic, and relational database architecture. His approach treats software as applied problem-solving: identify an operational inefficiency in an existing process, then design a system — interface, logic, and data layer — that removes it.</p>
+      <p>His portfolio includes production deployments in agriculture, retail forecasting, and hospitality management, built primarily with PHP, Python, SQL, and modern JavaScript tooling. He is currently completing a Master of Computer Applications and is available for full-time roles.</p>
+    </div>
+    <div class="fact-row reveal">
+      <div class="fact"><div class="n">03</div><div class="l">Shipped Systems</div></div>
+      <div class="fact"><div class="n">7.0</div><div class="l">MCA GPA / 10</div></div>
+      <div class="fact"><div class="n">01</div><div class="l">Active Internship</div></div>
+      <div class="fact"><div class="n">02</div><div class="l">Languages</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="areas">
+  <div class="measure">
+    <div class="sec-label"><span class="roman">II.</span><h2 class="sec-title">Research Areas</h2></div>
+    <table class="areas-table reveal">
+      <tr>
+        <td class="label">Interface</td>
+        <td class="items">HTML <span class="sep">·</span> CSS <span class="sep">·</span> JavaScript <span class="sep">·</span> React <span class="sep">·</span> Tailwind CSS <span class="sep">·</span> TypeScript</td>
+      </tr>
+      <tr>
+        <td class="label">Application</td>
+        <td class="items">Modern PHP <span class="sep">·</span> Python <span class="sep">·</span> REST API Design</td>
+      </tr>
+      <tr>
+        <td class="label">Data</td>
+        <td class="items">SQL <span class="sep">·</span> MySQL <span class="sep">·</span> PostgreSQL <span class="sep">·</span> Schema Design</td>
+      </tr>
+      <tr>
+        <td class="label">Infrastructure</td>
+        <td class="items">Git <span class="sep">·</span> cPanel <span class="sep">·</span> FileZilla <span class="sep">·</span> phpMyAdmin <span class="sep">·</span> InfinityFree <span class="sep">·</span> SSL / DNS</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section id="works">
+  <div class="measure">
+    <div class="sec-label"><span class="roman">III.</span><h2 class="sec-title">Selected Works</h2></div>
+
+    <div class="pub open reveal" onclick="togglePub(this)">
+      <div class="pub-head">
+        <div class="pub-num">[1]</div>
+        <div class="pub-main">
+          <div class="pub-title">Tractor Book App</div>
+          <div class="pub-meta">2026 — PRESENT · PHP / MySQL / Razorpay · Status: Active</div>
+        </div>
+        <div class="pub-arrow">▸</div>
+      </div>
+      <div class="pub-body">
+        <div class="pub-body-inner">
+          <span class="tag">Problem</span>
+          <p>Farmers and equipment owners lacked a reliable way to manage tractor maintenance schedules, locate machinery services, and settle payments — most record-keeping was informal and cash-based.</p>
+          <span class="tag">Method &amp; Result</span>
+          <p>Designed and deployed a responsive full-stack platform for listing, filtering, and tracking agricultural machinery maintenance, with Razorpay integrated for secure digital payment. The interface was built mobile-first, so it holds up for a farmer working from a phone in the field.</p>
+          <a class="link" href="https://tractor.infinityfreeapp.com" target="_blank" rel="noopener">tractor.infinityfreeapp.com ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub reveal" onclick="togglePub(this)">
+      <div class="pub-head">
+        <div class="pub-num">[2]</div>
+        <div class="pub-main">
+          <div class="pub-title">BigMart Sales Prediction</div>
+          <div class="pub-meta">2024 — 2025 · Python / Machine Learning · Status: Complete</div>
+        </div>
+        <div class="pub-arrow">▸</div>
+      </div>
+      <div class="pub-body">
+        <div class="pub-body-inner">
+          <span class="tag">Problem</span>
+          <p>Retail businesses routinely overstock or run out of inventory because customer demand is difficult to forecast, resulting in lost revenue and wasted resources.</p>
+          <span class="tag">Method &amp; Result</span>
+          <p>Applied machine learning techniques to historical retail sales data to forecast future product demand. The resulting model surfaced which product and store attributes most influenced sales, giving managers a data-driven basis for stocking and marketing decisions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub reveal" onclick="togglePub(this)">
+      <div class="pub-head">
+        <div class="pub-num">[3]</div>
+        <div class="pub-main">
+          <div class="pub-title">Hotel Management System</div>
+          <div class="pub-meta">2021 — 2024 · Full Stack · Status: Complete</div>
+        </div>
+        <div class="pub-arrow">▸</div>
+      </div>
+      <div class="pub-body">
+        <div class="pub-body-inner">
+          <span class="tag">Problem</span>
+          <p>Manual room booking, paper-based billing, and scattered guest records created high operational overhead and frequent billing errors.</p>
+          <span class="tag">Method &amp; Result</span>
+          <p>Developed a unified application to automate room availability tracking, reservations, and billing, backed by a secure relational database. Reduced double-booking risk and materially sped up check-in and check-out.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="measure">
+    <div class="sec-label"><span class="roman">IV.</span><h2 class="sec-title">Professional Experience</h2></div>
+
+    <div class="cv-item reveal">
+      <div class="cv-when">2026</div>
+      <div>
+        <div class="cv-what">Full Stack Developer Intern</div>
+        <div class="cv-where">SSPR Software Services, Pavoorchatram</div>
+        <div class="cv-desc">Key responsibilities: REST API creation, database schema design, and backend optimization.</div>
+      </div>
+    </div>
+
+    <div class="cv-item reveal">
+      <div class="cv-when">Ongoing</div>
+      <div>
+        <div class="cv-what">Deployment &amp; Server Administration</div>
+        <div class="cv-where">Independent builds</div>
+        <div class="cv-desc">Configuring and managing full-stack PHP/MySQL applications on live production servers — remote database privileges, phpMyAdmin imports, FTP file structures, custom domains, DNS routing, and SSL/HTTPS provisioning.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="measure">
+    <div class="sec-label"><span class="roman">V.</span><h2 class="sec-title">Education</h2></div>
+
+    <div class="cv-item reveal">
+      <div class="cv-when">2024 — 2026</div>
+      <div>
+        <div class="cv-what">Master of Computer Applications</div>
+        <div class="cv-where">Sardar Raja College of Engineering</div>
+        <div class="cv-desc">GPA — 7.0 / 10</div>
+      </div>
+    </div>
+    <div class="cv-item reveal">
+      <div class="cv-when">2021 — 2024</div>
+      <div>
+        <div class="cv-what">Bachelor of Computer Science</div>
+        <div class="cv-where">JP College of Arts &amp; Science</div>
+        <div class="cv-desc">GPA — 7.0 / 10</div>
+      </div>
+    </div>
+    <div class="cv-item reveal">
+      <div class="cv-when">2018 — 2021</div>
+      <div>
+        <div class="cv-what">Higher Secondary Education</div>
+        <div class="cv-where">BBHSS</div>
+        <div class="cv-desc">HSC 80% · SSLC 68.2%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="measure">
+    <div class="footer-grid reveal">
+      <div>
+        <h2>Open to full-time<br>opportunities.</h2>
+        <div class="footer-contact">
+          <div>→ <a href="mailto:charlespro504@gmail.com">charlespro504@gmail.com</a></div>
+          <div>→ <a href="tel:+917825919760">+91 78259 19760</a></div>
+          <div>→ <a href="https://www.linkedin.com/in/charles2003" target="_blank" rel="noopener">linkedin.com/in/charles2003</a></div>
+          <div>→ Tenkasi, Tamil Nadu, India</div>
+        </div>
+      </div>
+      <div class="footer-lang">
+        <div><b>English</b>Fluent</div>
+        <div><b>Tamil</b>Native</div>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Charles J</span>
+      <span>Curriculum Vitae · Revision Final</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function togglePub(el){
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.pub').forEach(p=>p.classList.remove('open'));
+    if(!wasOpen) el.classList.add('open');
+  }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, {threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
